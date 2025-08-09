@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Creative Age Calculator</title>
+    <title>Fate Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Jost:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        
+        body {
+            font-family: 'Jost', sans-serif;
+        }
+        .font-cinzel {
+            font-family: 'Cinzel Decorative', cursive;
+        }
         /* Shake animation */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -16,56 +26,64 @@
         .shake {
             animation: shake 0.3s ease-in-out;
         }
+
+        /* Glow effect for button */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #fde047, 0 0 10px #fde047; }
+            50% { box-shadow: 0 0 20px #facc15, 0 0 30px #facc15; }
+            100% { box-shadow: 0 0 5px #fde047, 0 0 10px #fde047; }
+        }
+        .glow-on-hover {
+            animation: glow 2.5s infinite;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-r from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-5">
-    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full">
-        <h1 class="text-3xl font-extrabold text-center mb-6 text-purple-600">Life Calculator</h1>
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 min-h-screen flex items-center justify-center p-5 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
+    <div class="bg-slate-800/50 backdrop-blur-sm rounded-3xl shadow-2xl shadow-purple-500/20 p-8 max-w-lg w-full border border-purple-400/30">
+        <h1 class="text-4xl font-cinzel font-bold text-center mb-2 text-yellow-300">Fate Calculator</h1>
+        <p class="text-center text-purple-300 mb-8">Unveiling Your Ridiculous Destiny</p>
 
-        <!-- Name Input -->
-        <div class="mb-4">
-            <label for="name" class="block text-gray-700 font-medium mb-1">Enter your Name:</label>
+        <div class="mb-5">
+            <label for="name" class="block text-purple-300 font-medium mb-2">Scribe Your Mortal Name:</label>
             <input
                 type="text"
                 id="name"
-                placeholder="Your full name"
-                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="e.g., Bartholomew Stardust"
+                class="w-full p-3 bg-gray-900/70 border border-purple-500/50 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition"
             />
         </div>
 
-        <!-- DOB Input -->
-        <div class="mb-4">
-            <label for="dob" class="block text-gray-700 font-medium mb-1">Enter your Date of Birth:</label>
+        <div class="mb-6">
+            <label for="dob" class="block text-purple-300 font-medium mb-2">Reveal Your Star-Chart Date:</label>
             <input
                 type="text"
                 id="dob"
                 placeholder="dd-mm-yyyy"
-                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                class="w-full p-3 bg-gray-900/70 border border-purple-500/50 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition"
             />
         </div>
 
-        <!-- Button -->
         <button
             id="calculateBtn"
-            class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+            class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold py-3 rounded-lg transition duration-200 glow-on-hover text-lg"
         >
-            Calculate Age
+            Gaze into the Void ✨
         </button>
 
-        <!-- Loading Bar -->
-        <div id="loadingBarContainer" class="hidden w-full bg-gray-300 rounded-lg mt-4">
-            <div id="loadingBar" class="h-3 bg-purple-500 rounded-lg" style="width: 0%"></div>
+        <div id="loadingBarContainer" class="hidden w-full bg-gray-700 rounded-full mt-5">
+            <div id="loadingBar" class="h-3 bg-gradient-to-r from-yellow-400 to-purple-500 rounded-full" style="width: 0%"></div>
         </div>
 
-        <!-- Messages -->
-        <div id="message" class="mt-4 hidden p-3 rounded-lg"></div>
+        <div id="message" class="mt-4 hidden p-3 rounded-lg font-bold"></div>
 
-        <!-- Results -->
-        <div id="results" class="mt-6">
-            <p id="result" class="text-lg font-medium text-gray-800 mb-4"></p>
-            <ul id="milestones" class="list-disc pl-5 space-y-1"></ul>
-            <!-- Life Advice Card -->
-            <div id="lifeAdviceCard" class="mt-6 p-4 border border-purple-300 rounded-lg bg-purple-50 text-purple-700 font-semibold hidden"></div>
+        <div id="results" class="mt-6 text-center">
+            <p id="result" class="text-xl font-medium text-white mb-4"></p>
+            <div id="lifeAdviceCard" class="mt-6 mb-5 p-4 border-2 border-dashed border-yellow-300/50 rounded-lg bg-purple-900/30 text-yellow-200 font-semibold hidden italic"></div>
+             <p id="blinkCount" class="text-purple-300 text-md font-semibold mb-4"></p>
+            <div id="milestones-container" class="hidden">
+                <h2 class="font-cinzel text-2xl text-yellow-300 mt-6 mb-3">Cosmic Prophecies</h2>
+                <ul id="milestones" class="list-none space-y-2 text-left"></ul>
+            </div>
         </div>
     </div>
 
@@ -76,10 +94,12 @@
         const messageDiv = document.getElementById("message");
         const resultDiv = document.getElementById("result");
         const milestonesList = document.getElementById("milestones");
+        const milestonesContainer = document.getElementById("milestones-container");
         const calculateBtn = document.getElementById("calculateBtn");
         const loadingBarContainer = document.getElementById("loadingBarContainer");
         const loadingBar = document.getElementById("loadingBar");
         const lifeAdviceCard = document.getElementById("lifeAdviceCard");
+        const blinkElem = document.getElementById("blinkCount");
 
         const marriageMessages = [
             "നിനക്ക് വിവാഹമില്ല... ഫാമിലി വാട്സ്ആപ്പ് ഗ്രൂപ്പിലും പ്രതീക്ഷയില്ല!",
@@ -127,7 +147,6 @@
             "അവസാനം വന്നുചേരുന്നത് ഒരു നല്ല പാട്ടായിരിക്കട്ടെ.",
         ];
 
-        // Malayalam sarcastic roast style life advice cards
         const lifeAdvice = [
           { maxAge: 12, advice: "കുഞ്ഞേ, പാഠപുസ്തകം വായിക്കണം അല്ലേ? YouTube-ൽ മാത്രം കണ്ടു തീരില്ല." },
           { maxAge: 18, advice: "പഠനം കിട്ടില്ലേ? എങ്കിൽ Netflix സബ്സ്ക്രിപ്ഷൻ കുറക്കാൻ സമയമാണ്." },
@@ -139,7 +158,7 @@
 
         function showMessage(msg, type) {
             messageDiv.textContent = msg;
-            messageDiv.className = `mt-4 p-3 rounded-lg text-white ${type === "error" ? "bg-red-500" : "bg-green-500"}`;
+            messageDiv.className = `mt-4 p-3 rounded-lg font-bold text-white ${type === "error" ? "bg-red-500/80" : "bg-green-500/80"}`;
             messageDiv.classList.remove("hidden");
         }
 
@@ -151,54 +170,63 @@
             }
             return "ജീവിതം വലിയ കളിയാണ്, അത് ആസ്വദിക്കൂ!";
         }
+        
+        function fireConfetti() {
+            var end = Date.now() + (2 * 1000);
+            var colors = ['#fde047', '#a855f7', '#ffffff'];
+
+            (function frame() {
+              confetti({
+                particleCount: 3,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: colors
+              });
+              confetti({
+                particleCount: 3,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: colors
+              });
+
+              if (Date.now() < end) {
+                requestAnimationFrame(frame);
+              }
+            }());
+        }
 
         function showResults(userName, birthDate, years, months, days) {
-            // Display age
-            resultDiv.textContent = `Hello ${userName}! You are ${years} years, ${months} months, and ${days} days old.`;
+            resultDiv.innerHTML = `<span class="font-cinzel text-yellow-300">Greetings, ${userName}!</span><br>The cosmos reveals you have orbited the sun for <span class="text-white font-bold">${years}</span> years, <span class="text-white font-bold">${months}</span> months, and <span class="text-white font-bold">${days}</span> days.`;
 
-            // Calculate total days lived (approximate)
             const totalDays = years * 365 + months * 30 + days;
-
-            // Calculate total minutes lived
             const totalMinutes = totalDays * 24 * 60;
-
-            // Average blinks per minute
             const blinksPerMinute = 15;
-
-            // Total blinks
             const totalBlinks = Math.round(totalMinutes * blinksPerMinute);
-
-            // Create or update blink count element
-            let blinkElem = document.getElementById("blinkCount");
-            if (!blinkElem) {
-                blinkElem = document.createElement("p");
-                blinkElem.id = "blinkCount";
-                blinkElem.className = "text-gray-700 text-md font-semibold mb-4";
-                resultDiv.parentNode.insertBefore(blinkElem, milestonesList);
-            }
-            blinkElem.textContent = `👁️ You have blinked approximately ${totalBlinks.toLocaleString()} times since you were born!`;
-
-            // Show a sarcastic life advice card based on age
+            
+            blinkElem.textContent = `👁️ You've blinked approx. ${totalBlinks.toLocaleString()} times. A truly pointless statistic.`;
+            
             const advice = getLifeAdvice(years);
-            lifeAdviceCard.textContent = `🔥 ജീവിത ഉപദേശം: ${advice}`;
+            lifeAdviceCard.textContent = `📜 A Prophecy For You: ${advice}`;
             lifeAdviceCard.classList.remove("hidden");
 
             function randomBetween(min, max) {
                return Math.floor(Math.random() * (max - min + 1)) + min;
             }
 
-            // Calculate milestones from birthDate
             const milestones = [
-                { label: "1st Birthday", yearsToAdd: 1 },
-                { label: "18th Birthday", yearsToAdd: 18 },
-                { label: "21st Birthday", yearsToAdd: 21 },
-                { label: "50th Birthday", yearsToAdd: 50 },
-                { label: "100th Birthday", yearsToAdd: 100 },
-                { label: "Marriage Date (est.)", yearsToAdd: randomBetween(25, 35) },
-                { label: "Estimated Date of Death", yearsToAdd: randomBetween(75, 95) },
+                { label: "1st Solar Return", yearsToAdd: 1 },
+                { label: "The Great Awakening (18th Return)", yearsToAdd: 18 },
+                { label: "The 'Adulting' Illusion (21st Return)", yearsToAdd: 21 },
+                { label: "Mid-life Cosmic Shift (50th Return)", yearsToAdd: 50 },
+                { label: "The Centennial Star (100th Return)", yearsToAdd: 100 },
+                { label: "Fated Union (Marriage)", yearsToAdd: randomBetween(25, 35) },
+                { label: "Return to Stardust (Death)", yearsToAdd: randomBetween(75, 95) },
             ];
 
             milestonesList.innerHTML = "";
+            milestonesContainer.classList.remove("hidden");
 
             milestones.forEach((ms) => {
                 const milestoneDate = new Date(
@@ -206,31 +234,26 @@
                     birthDate.getMonth(),
                     birthDate.getDate()
                 );
-                const dateStr = milestoneDate.toLocaleDateString("en-GB");
+                const dateStr = milestoneDate.toLocaleDateString("en-GB", {day: 'numeric', month: 'long', year: 'numeric'});
 
                 let msg = "";
-                if (ms.label === "Marriage Date (est.)") {
+                if (ms.label.includes("Fated Union")) {
                     const marriageMsg = marriageMessages[Math.floor(Math.random() * marriageMessages.length)];
-                    msg = `${ms.label}: ${dateStr} — <span class="text-red-600">${marriageMsg}</span>`;
-                } else if (ms.label === "Estimated Date of Death") {
+                    msg = `<strong>${ms.label}:</strong> Around ${dateStr} <br> <span class="text-sm text-red-400 italic pl-4">- ${marriageMsg}</span>`;
+                } else if (ms.label.includes("Return to Stardust")) {
                     const deathMsg = deathMessages[Math.floor(Math.random() * deathMessages.length)];
-                    msg = `${ms.label}: ${dateStr} — <span class="text-red-600">${deathMsg}</span>`;
+                    msg = `<strong>${ms.label}:</strong> Around ${dateStr} <br> <span class="text-sm text-red-400 italic pl-4">- ${deathMsg}</span>`;
                 } else {
-                    msg = `${ms.label}: ${dateStr}`;
+                    msg = `<strong>${ms.label}:</strong> ${dateStr}`;
                 }
 
                 const li = document.createElement("li");
-                li.innerHTML = msg;
-                li.className = "text-gray-700";
+                li.innerHTML = `⭐ ${msg}`;
+                li.className = "text-purple-200 bg-gray-900/50 p-3 rounded-lg border-l-4 border-yellow-400";
                 milestonesList.appendChild(li);
             });
-
-            // Confetti
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-            });
+            
+            fireConfetti();
         }
 
         function calculateAge() {
@@ -238,31 +261,30 @@
             const dobStr = dobInput.value.trim();
 
             if (!userName) {
-                showMessage("Please enter your name.", "error");
+                showMessage("The stars demand a name!", "error");
                 nameInput.classList.add("shake");
                 setTimeout(() => nameInput.classList.remove("shake"), 500);
                 return;
             }
 
             if (!dobStr) {
-                showMessage("Please enter your date of birth.", "error");
+                showMessage("Your birth date is required by the cosmos.", "error");
                 dobInput.classList.add("shake");
                 setTimeout(() => dobInput.classList.remove("shake"), 500);
                 return;
             }
 
-            // Validate DOB format dd-mm-yyyy
             const dobPattern = /^(\d{2})-(\d{2})-(\d{4})$/;
             const match = dobStr.match(dobPattern);
             if (!match) {
-                showMessage("Invalid date format. Use dd-mm-yyyy.", "error");
+                showMessage("The universe dislikes this date format. Use dd-mm-yyyy.", "error");
                 dobInput.classList.add("shake");
                 setTimeout(() => dobInput.classList.remove("shake"), 500);
                 return;
             }
 
             const day = parseInt(match[1], 10);
-            const month = parseInt(match[2], 10) - 1; // zero-based month
+            const month = parseInt(match[2], 10) - 1;
             const year = parseInt(match[3], 10);
 
             const birthDate = new Date(year, month, day);
@@ -271,7 +293,7 @@
                 birthDate.getMonth() !== month ||
                 birthDate.getDate() !== day
             ) {
-                showMessage("Invalid date. Please enter a real date.", "error");
+                showMessage("That's not a real date, you silly mortal.", "error");
                 dobInput.classList.add("shake");
                 setTimeout(() => dobInput.classList.remove("shake"), 500);
                 return;
@@ -279,27 +301,31 @@
 
             const now = new Date();
             if (birthDate > now) {
-                showMessage("You are not born yet! Enter a valid past date.", "error");
+                showMessage("Are you a time traveler? Enter a date from the past.", "error");
                 dobInput.classList.add("shake");
                 setTimeout(() => dobInput.classList.remove("shake"), 500);
                 return;
             }
 
-            // Reset UI and show loading bar
             messageDiv.classList.add("hidden");
             resultDiv.textContent = "";
             milestonesList.innerHTML = "";
+            milestonesContainer.classList.add("hidden");
             lifeAdviceCard.classList.add("hidden");
+            blinkElem.textContent = "";
             loadingBarContainer.classList.remove("hidden");
             loadingBar.style.width = "0%";
+            calculateBtn.disabled = true;
+            calculateBtn.textContent = "Consulting the Oracle...";
 
-            // Animate loading bar over 2.5 seconds
             let width = 0;
             const interval = setInterval(() => {
                 if (width >= 100) {
                     clearInterval(interval);
                     loadingBarContainer.classList.add("hidden");
-                    // Calculate age in years, months, days
+                    calculateBtn.disabled = false;
+                    calculateBtn.textContent = "Gaze into the Void ✨";
+                    
                     let years = now.getFullYear() - birthDate.getFullYear();
                     let months = now.getMonth() - birthDate.getMonth();
                     let days = now.getDate() - birthDate.getDate();
@@ -318,7 +344,7 @@
                     width += 2;
                     loadingBar.style.width = width + "%";
                 }
-            }, 50);
+            }, 40);
         }
 
         calculateBtn.addEventListener("click", calculateAge);
