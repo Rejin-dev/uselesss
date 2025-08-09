@@ -42,20 +42,20 @@ Open the index.html file in any modern browser to launch the app.
 ### Project Documentation
 For Software:
 
-# Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
+# Screenshots
+![Alt text](Screenshot1.png)
+*User inputs name and date of birth.*
 
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
+![Alt text](Screenshot2.png)
+*Sarcastic life milestones and age calculation results displayed.*
 
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+![Alt text](Screenshot3.png)
+*A visual highlight*
 
 
 ## Team Contributions
-- Rejin Dev P: Lead developer, UI design, and logic implementation
-- Salman A: Sarcastic Malayalam message creation, confetti and co-developer
+- Rejin Dev P: Developer, UI design, and troubleshooting
+- Salman A: Sarcastic Malayalam message creation, confetti and logic implementation
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
