@@ -156,6 +156,28 @@
             // Display age
             resultDiv.textContent = `Hello ${userName}! You are ${years} years, ${months} months, and ${days} days old.`;
 
+            // Calculate total days lived (approximate)
+            const totalDays = years * 365 + months * 30 + days;
+
+            // Calculate total minutes lived
+            const totalMinutes = totalDays * 24 * 60;
+
+            // Average blinks per minute
+            const blinksPerMinute = 15;
+
+            // Total blinks
+            const totalBlinks = Math.round(totalMinutes * blinksPerMinute);
+
+            // Create or update blink count element
+            let blinkElem = document.getElementById("blinkCount");
+            if (!blinkElem) {
+                blinkElem = document.createElement("p");
+                blinkElem.id = "blinkCount";
+                blinkElem.className = "text-gray-700 text-md font-semibold mb-4";
+                resultDiv.parentNode.insertBefore(blinkElem, milestonesList);
+            }
+            blinkElem.textContent = `👁️ You have blinked approximately ${totalBlinks.toLocaleString()} times since you were born!`;
+
             // Show a sarcastic life advice card based on age
             const advice = getLifeAdvice(years);
             lifeAdviceCard.textContent = `🔥 ജീവിത ഉപദേശം: ${advice}`;
@@ -203,104 +225,103 @@
                 milestonesList.appendChild(li);
             });
 
-            // Custom confetti with colors & shapes
+            // Confetti
             confetti({
-                particleCount: 150,
-                spread: 90,
+                particleCount: 100,
+                spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#9333ea', '#8b5cf6', '#a78bfa', '#c4b5fd'], // purple-ish shades
-                shapes: ['square', 'circle', 'triangle']
             });
         }
 
-        function calculateAgeAndMilestones() {
+        function calculateAge() {
             const userName = nameInput.value.trim();
+            const dobStr = dobInput.value.trim();
+
             if (!userName) {
                 showMessage("Please enter your name.", "error");
+                nameInput.classList.add("shake");
+                setTimeout(() => nameInput.classList.remove("shake"), 500);
                 return;
             }
 
-            const dob = dobInput.value.trim();
-            if (!/^\d{2}-\d{2}-\d{4}$/.test(dob)) {
-                showMessage("Please enter date in dd-mm-yyyy format.", "error");
+            if (!dobStr) {
+                showMessage("Please enter your date of birth.", "error");
+                dobInput.classList.add("shake");
+                setTimeout(() => dobInput.classList.remove("shake"), 500);
                 return;
             }
 
-            const [day, month, year] = dob.split("-").map(Number);
-            const birthDate = new Date(year, month - 1, day);
+            // Validate DOB format dd-mm-yyyy
+            const dobPattern = /^(\d{2})-(\d{2})-(\d{4})$/;
+            const match = dobStr.match(dobPattern);
+            if (!match) {
+                showMessage("Invalid date format. Use dd-mm-yyyy.", "error");
+                dobInput.classList.add("shake");
+                setTimeout(() => dobInput.classList.remove("shake"), 500);
+                return;
+            }
+
+            const day = parseInt(match[1], 10);
+            const month = parseInt(match[2], 10) - 1; // zero-based month
+            const year = parseInt(match[3], 10);
+
+            const birthDate = new Date(year, month, day);
             if (
-                birthDate.getDate() !== day ||
-                birthDate.getMonth() !== month - 1 ||
-                birthDate.getFullYear() !== year
+                birthDate.getFullYear() !== year ||
+                birthDate.getMonth() !== month ||
+                birthDate.getDate() !== day
             ) {
-                showMessage("Invalid date entered.", "error");
+                showMessage("Invalid date. Please enter a real date.", "error");
+                dobInput.classList.add("shake");
+                setTimeout(() => dobInput.classList.remove("shake"), 500);
                 return;
             }
 
-            const today = new Date();
-
-            if (birthDate > today) {
-                showMessage("Date of birth cannot be in the future.", "error");
+            const now = new Date();
+            if (birthDate > now) {
+                showMessage("You are not born yet! Enter a valid past date.", "error");
+                dobInput.classList.add("shake");
+                setTimeout(() => dobInput.classList.remove("shake"), 500);
                 return;
             }
 
-            let years = today.getFullYear() - year;
-            let months = today.getMonth() - (month - 1);
-            let days = today.getDate() - day;
-
-            if (days < 0) {
-                months--;
-                const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-                days += prevMonth.getDate();
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
-
-            // Clear previous messages and results
+            // Reset UI and show loading bar
             messageDiv.classList.add("hidden");
             resultDiv.textContent = "";
             milestonesList.innerHTML = "";
             lifeAdviceCard.classList.add("hidden");
-
-            // Show loading bar with animation
             loadingBarContainer.classList.remove("hidden");
             loadingBar.style.width = "0%";
-            calculateBtn.disabled = true;
-            calculateBtn.textContent = "Calculating...";
 
-            let progress = 0;
-            const loadingInterval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(loadingInterval);
+            // Animate loading bar over 2.5 seconds
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
                     loadingBarContainer.classList.add("hidden");
-                    calculateBtn.disabled = false;
-                    calculateBtn.textContent = "Calculate Age";
+                    // Calculate age in years, months, days
+                    let years = now.getFullYear() - birthDate.getFullYear();
+                    let months = now.getMonth() - birthDate.getMonth();
+                    let days = now.getDate() - birthDate.getDate();
+
+                    if (days < 0) {
+                        months--;
+                        days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                    }
+                    if (months < 0) {
+                        years--;
+                        months += 12;
+                    }
+
                     showResults(userName, birthDate, years, months, days);
+                } else {
+                    width += 2;
+                    loadingBar.style.width = width + "%";
                 }
-                loadingBar.style.width = `${progress}%`;
-            }, 300);
+            }, 50);
         }
 
-        // Button click shake & staged confirmation
-        let clickStage = 0;
-        const buttonTexts = ["Are you sure?", "Really sure?", "Okay, fine."];
-
-        calculateBtn.addEventListener('click', () => {
-            calculateBtn.classList.add('shake');
-            setTimeout(() => calculateBtn.classList.remove('shake'), 300);
-
-            if (clickStage < buttonTexts.length) {
-                calculateBtn.textContent = buttonTexts[clickStage];
-                clickStage++;
-            } else {
-                calculateAgeAndMilestones();
-                clickStage = 0;
-            }
-        });
+        calculateBtn.addEventListener("click", calculateAge);
     </script>
 </body>
 </html>
