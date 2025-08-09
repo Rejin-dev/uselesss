@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Age Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-5">
+
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full">
+        <h1 class="text-3xl font-extrabold text-center mb-6 text-purple-600">🎂 Creative Age Calculator</h1>
+
+        <!-- Name Input -->
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700 font-medium mb-1">Enter your Name:</label>
+            <input type="text" id="name" placeholder="Your full name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+
+        <!-- DOB Input -->
+        <div class="mb-4">
+            <label for="dob" class="block text-gray-700 font-medium mb-1">Enter your Date of Birth:</label>
+            <input type="text" id="dob" placeholder="dd-mm-yyyy" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+
+        <!-- Button -->
+        <button id="calculateBtn" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg transition duration-200">
+            Calculate Age & Milestones
+        </button>
+
+        <!-- Messages -->
+        <div id="message" class="mt-4 hidden p-3 rounded-lg"></div>
+
+        <!-- Results -->
+        <div id="results" class="mt-6">
+            <p id="result" class="text-lg font-medium text-gray-800 mb-4"></p>
+            <ul id="milestones" class="list-disc pl-5 space-y-1"></ul>
+        </div>
+    </div>
+
+    <script>
+        const nameInput = document.getElementById('name');
+        const dobInput = document.getElementById('dob');
+        const messageDiv = document.getElementById('message');
+        const resultDiv = document.getElementById('result');
+        const milestonesList = document.getElementById('milestones');
+        const calculateBtn = document.getElementById('calculateBtn');
+
+        function showMessage(msg, type) {
+            messageDiv.textContent = msg;
+            messageDiv.className = `mt-4 p-3 rounded-lg text-white ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
+            messageDiv.classList.remove('hidden');
+        }
+
+        function calculateAgeAndMilestones() {
+            const userName = nameInput.value.trim();
+            if (!userName) {
+                showMessage('Please enter your name.', 'error');
+                return;
+            }
+
+            const dob = dobInput.value.trim();
+            if (!/^\d{2}-\d{2}-\d{4}$/.test(dob)) {
+                showMessage('Please enter date in dd-mm-yyyy format.', 'error');
+                return;
+            }
+
+            const [day, month, year] = dob.split('-').map(Number);
+            const birthDate = new Date(year, month - 1, day);
+            if (birthDate.getDate() !== day || birthDate.getMonth() !== month - 1 || birthDate.getFullYear() !== year) {
+                showMessage('Invalid date entered.', 'error');
+                return;
+            }
+
+            const today = new Date();
+            let years = today.getFullYear() - year;
+            let months = today.getMonth() - (month - 1);
+            let days = today.getDate() - day;
+
+            if (days < 0) {
+                months--;
+                const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const hours = today.getHours();
+            const minutes = today.getMinutes();
+            const seconds = today.getSeconds();
+
+            // Always show actual age
+            resultDiv.textContent = `${userName}, you are ${years} years, ${months} months, ${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds old.`;
+
+            // Milestones
+            const milestones = [];
+
+            // 1 million minutes old
+            const oneMillionMinutes = new Date(birthDate.getTime() + 1000000 * 60 * 1000);
+            milestones.push({ label: '1 million minutes old', date: oneMillionMinutes });
+
+            // Next birthday
+            const nextBirthday = new Date(today.getFullYear(), month - 1, day);
+            if (nextBirthday < today) {
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+            }
+            milestones.push({ label: 'Next birthday', date: nextBirthday });
+
+            // 10,000th day alive
+            const tenThousandDays = new Date(birthDate.getTime() + 10000 * 24 * 60 * 60 * 1000);
+            milestones.push({ label: '10,000th day alive', date: tenThousandDays });
+
+            // 🎯 Fun random marriage prediction
+            const randomMarriageAge = Math.floor(Math.random() * (35 - 22 + 1)) + 22;
+            const marriageDate = new Date(birthDate.getFullYear() + randomMarriageAge, birthDate.getMonth(), birthDate.getDate());
+
+            let marriageLabel;
+            let marriageDateValue = marriageDate; // keep for display unless joke
+            if (Math.random() < 0.9) {
+                marriageLabel = `<span style="color:red; font-weight:bold;">Predicted marriage date (fun) - നിനക്ക് ഒരു പെണ്ണിനെ കിട്ടില്ല.</span>`;
+                marriageDateValue = null; // hide date when joke is shown
+            } else {
+                marriageLabel = 'Predicted marriage date (fun)';
+            }
+
+            milestones.push({ label: marriageLabel, date: marriageDateValue });
+
+            // Sort milestones by date (null dates stay last)
+            milestones.sort((a, b) => {
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                return a.date - b.date;
+            });
+
+            // Display milestones
+            milestonesList.innerHTML = '';
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            milestones.forEach(m => {
+                const li = document.createElement('li');
+                if (m.date) {
+                    li.innerHTML = `${m.label}: ${m.date.toLocaleDateString(undefined, options)}`;
+                } else {
+                    li.innerHTML = `${m.label}`; // no date
+                }
+                milestonesList.appendChild(li);
+            });
+
+            showMessage('Age calculated successfully!', 'success');
+        }
+
+        calculateBtn.addEventListener('click', calculateAgeAndMilestones);
+    </script>
+</body>
+</html>
+
