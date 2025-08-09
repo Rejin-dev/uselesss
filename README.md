@@ -52,6 +52,11 @@ For Software:
 ![Alt text](Screenshot3.png)
 *A visual highlight*
 
+### Project Demo
+# Video
+[![Watch the demo](Screenshot11.png)](https://youtu.be/KyXE5mLKEVg)
+
+
 
 ## Team Contributions
 - Rejin Dev P: Developer, UI design, and troubleshooting
