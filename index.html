@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creative Age Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Shake animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-r from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-5">
 
@@ -25,8 +37,13 @@
 
         <!-- Button -->
         <button id="calculateBtn" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg transition duration-200">
-            Calculate Age & Milestones
+            Calculate Age
         </button>
+
+        <!-- Loading Bar -->
+        <div id="loadingBarContainer" class="hidden w-full bg-gray-300 rounded-lg mt-4">
+            <div id="loadingBar" class="h-3 bg-purple-500 rounded-lg" style="width: 0%;"></div>
+        </div>
 
         <!-- Messages -->
         <div id="message" class="mt-4 hidden p-3 rounded-lg"></div>
@@ -45,6 +62,8 @@
         const resultDiv = document.getElementById('result');
         const milestonesList = document.getElementById('milestones');
         const calculateBtn = document.getElementById('calculateBtn');
+        const loadingBarContainer = document.getElementById('loadingBarContainer');
+        const loadingBar = document.getElementById('loadingBar');
 
         function showMessage(msg, type) {
             messageDiv.textContent = msg;
@@ -91,10 +110,8 @@
             const minutes = today.getMinutes();
             const seconds = today.getSeconds();
 
-            // Always show actual age
             resultDiv.textContent = `${userName}, you are ${years} years, ${months} months, ${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds old.`;
 
-            // Milestones
             const milestones = [];
 
             // 1 million minutes old
@@ -112,29 +129,27 @@
             const tenThousandDays = new Date(birthDate.getTime() + 10000 * 24 * 60 * 60 * 1000);
             milestones.push({ label: '10,000th day alive', date: tenThousandDays });
 
-            // 🎯 Fun random marriage prediction
+            // Fun random marriage prediction
             const randomMarriageAge = Math.floor(Math.random() * (35 - 22 + 1)) + 22;
             const marriageDate = new Date(birthDate.getFullYear() + randomMarriageAge, birthDate.getMonth(), birthDate.getDate());
 
             let marriageLabel;
-            let marriageDateValue = marriageDate; // keep for display unless joke
+            let marriageDateValue = marriageDate;
             if (Math.random() < 0.5) {
-                marriageLabel = `<span style="color:red; font-weight:bold;">Predicted marriage date  - നിനക്ക് ഒരു പെണ്ണിനെ കിട്ടില്ല.</span>`;
-                marriageDateValue = null; // hide date when joke is shown
+                marriageLabel = `<span style="color:red; font-weight:bold;">Predicted marriage date - നിനക്ക് ഒരു പെണ്ണിനെ കിട്ടില്ല.</span>`;
+                marriageDateValue = null;
             } else {
-                marriageLabel = 'Predicted marriage date ';
+                marriageLabel = 'Predicted marriage date';
             }
 
             milestones.push({ label: marriageLabel, date: marriageDateValue });
 
-            // Sort milestones by date (null dates stay last)
             milestones.sort((a, b) => {
                 if (!a.date) return 1;
                 if (!b.date) return -1;
                 return a.date - b.date;
             });
 
-            // Display milestones
             milestonesList.innerHTML = '';
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             milestones.forEach(m => {
@@ -142,7 +157,7 @@
                 if (m.date) {
                     li.innerHTML = `${m.label}: ${m.date.toLocaleDateString(undefined, options)}`;
                 } else {
-                    li.innerHTML = `${m.label}`; // no date
+                    li.innerHTML = `${m.label}`;
                 }
                 milestonesList.appendChild(li);
             });
@@ -150,7 +165,40 @@
             showMessage('Age calculated successfully!', 'success');
         }
 
-        calculateBtn.addEventListener('click', calculateAgeAndMilestones);
+        // Button click stages + loading bar
+        let clickStage = 0;
+        const buttonTexts = ["Are you sure?", "Really sure?", "Okay, fine."];
+
+        calculateBtn.addEventListener('click', () => {
+            calculateBtn.classList.add('shake');
+            setTimeout(() => calculateBtn.classList.remove('shake'), 300);
+
+            if (clickStage < buttonTexts.length) {
+                setTimeout(() => {
+                    calculateBtn.textContent = buttonTexts[clickStage];
+                    clickStage++;
+                }, 200);
+                return;
+            }
+
+            if (clickStage === buttonTexts.length) {
+                loadingBar.style.width = '0%';
+                loadingBarContainer.classList.remove('hidden');
+
+                let progress = 0;
+                const loadingInterval = setInterval(() => {
+                    progress += 1;
+                    loadingBar.style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(loadingInterval);
+                        loadingBarContainer.classList.add('hidden');
+                        calculateAgeAndMilestones();
+                        calculateBtn.textContent = "Calculate Age";
+                        clickStage = 0;
+                    }
+                }, 30); // ~3 seconds
+            }
+        });
     </script>
 </body>
 </html>
