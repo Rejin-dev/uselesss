@@ -64,6 +64,8 @@
         <div id="results" class="mt-6">
             <p id="result" class="text-lg font-medium text-gray-800 mb-4"></p>
             <ul id="milestones" class="list-disc pl-5 space-y-1"></ul>
+            <!-- Life Advice Card -->
+            <div id="lifeAdviceCard" class="mt-6 p-4 border border-purple-300 rounded-lg bg-purple-50 text-purple-700 font-semibold hidden"></div>
         </div>
     </div>
 
@@ -77,6 +79,7 @@
         const calculateBtn = document.getElementById("calculateBtn");
         const loadingBarContainer = document.getElementById("loadingBarContainer");
         const loadingBar = document.getElementById("loadingBar");
+        const lifeAdviceCard = document.getElementById("lifeAdviceCard");
 
         const marriageMessages = [
             "നിനക്ക് വിവാഹം ഇല്ല… family WhatsApp group-ലും hope ഇല്ല!",
@@ -124,10 +127,90 @@
             "അവസാനം വന്ന് കൂടുമ്പോൾ, അത് ഒരു നല്ല പാട്ടാകാം!"
         ];
 
+        // Malayalam sarcastic roast style life advice cards
+        const lifeAdvice = [
+          { maxAge: 12, advice: "കുഞ്ഞേ, പാഠപുസ്തകം വായിക്കണം അല്ലേ? YouTube-ൽ മാത്രം കണ്ടു തീരില്ല." },
+          { maxAge: 18, advice: "പഠനം കിട്ടില്ലേ? എങ്കിൽ Netflix സബ്സ്ക്രിപ്ഷൻ കുറക്കാൻ സമയമാണ്." },
+          { maxAge: 30, advice: "വലിയ ആളായതല്ലേ? പണവും ജീവിതവും തമ്മിൽ പറ്റിപ്പോക്കാൻ പഠിക്കൂ." },
+          { maxAge: 50, advice: "വയസായി, പക്ഷേ മതി, ബസ്സ് മതി… അതിലും അകന്നു പോവാൻ പഠിക്കൂ." },
+          { maxAge: 80, advice: "നിനക്ക് അറിഞ്ഞ് പറയാം, ജീവിതം തക്കൂന്നു ആയാലും വണ്ടി ഓടിക്കുന്നപോലെ." },
+          { maxAge: 200, advice: "കഴിഞ്ഞ കാലങ്ങളിലെ പണ്ടാരത്തിരികഥകളല്ലേ കേട്ടിട്ടുള്ളത്? ഇനി അതും മുട്ടിവയ്ക്കാം." }
+        ];
+
         function showMessage(msg, type) {
             messageDiv.textContent = msg;
             messageDiv.className = `mt-4 p-3 rounded-lg text-white ${type === "error" ? "bg-red-500" : "bg-green-500"}`;
             messageDiv.classList.remove("hidden");
+        }
+
+        function getLifeAdvice(age) {
+            for (const adviceObj of lifeAdvice) {
+                if (age <= adviceObj.maxAge) {
+                    return adviceObj.advice;
+                }
+            }
+            return "ജീവിതം വലിയ കളിയാണ്, അത് ആസ്വദിക്കൂ!";
+        }
+
+        function showResults(userName, birthDate, years, months, days) {
+            // Display age
+            resultDiv.textContent = `Hello ${userName}! You are ${years} years, ${months} months, and ${days} days old.`;
+
+            // Show a sarcastic life advice card based on age
+            const advice = getLifeAdvice(years);
+            lifeAdviceCard.textContent = `🔥 ജീവിത ഉപദേശം: ${advice}`;
+            lifeAdviceCard.classList.remove("hidden");
+
+            function randomBetween(min, max) {
+               return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            // Calculate milestones from birthDate
+            const milestones = [
+                { label: "1st Birthday", yearsToAdd: 1 },
+                { label: "18th Birthday", yearsToAdd: 18 },
+                { label: "21st Birthday", yearsToAdd: 21 },
+                { label: "50th Birthday", yearsToAdd: 50 },
+                { label: "100th Birthday", yearsToAdd: 100 },
+                { label: "Marriage Date (est.)", yearsToAdd: randomBetween(25, 35) },
+                { label: "Estimated Date of Death", yearsToAdd: randomBetween(75, 95) },
+            ];
+
+            milestonesList.innerHTML = "";
+
+            milestones.forEach((ms) => {
+                const milestoneDate = new Date(
+                    birthDate.getFullYear() + ms.yearsToAdd,
+                    birthDate.getMonth(),
+                    birthDate.getDate()
+                );
+                const dateStr = milestoneDate.toLocaleDateString("en-GB");
+
+                let msg = "";
+                if (ms.label === "Marriage Date (est.)") {
+                    const marriageMsg = marriageMessages[Math.floor(Math.random() * marriageMessages.length)];
+                    msg = `${ms.label}: ${dateStr} — ${marriageMsg}`;
+                } else if (ms.label === "Estimated Date of Death") {
+                    const deathMsg = deathMessages[Math.floor(Math.random() * deathMessages.length)];
+                    msg = `${ms.label}: ${dateStr} — ${deathMsg}`;
+                } else {
+                    msg = `${ms.label}: ${dateStr}`;
+                }
+
+                const li = document.createElement("li");
+                li.textContent = msg;
+                li.className = "text-gray-700";
+                milestonesList.appendChild(li);
+            });
+
+            // Custom confetti with colors & shapes
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 },
+                colors: ['#9333ea', '#8b5cf6', '#a78bfa', '#c4b5fd'], // purple-ish shades
+                shapes: ['square', 'circle', 'triangle']
+            });
         }
 
         function calculateAgeAndMilestones() {
@@ -174,14 +257,21 @@
                 years--;
                 months += 12;
             }
-                  // Show loading bar with animation
-                loadingBarContainer.classList.remove("hidden");
-                loadingBar.style.width = "0%";
-                calculateBtn.disabled = true;
-                calculateBtn.textContent = "Calculating...";
-                let progress = 0;
 
-                const loadingInterval = setInterval(() => {
+            // Clear previous messages and results
+            messageDiv.classList.add("hidden");
+            resultDiv.textContent = "";
+            milestonesList.innerHTML = "";
+            lifeAdviceCard.classList.add("hidden");
+
+            // Show loading bar with animation
+            loadingBarContainer.classList.remove("hidden");
+            loadingBar.style.width = "0%";
+            calculateBtn.disabled = true;
+            calculateBtn.textContent = "Calculating...";
+
+            let progress = 0;
+            const loadingInterval = setInterval(() => {
                 progress += Math.random() * 15;
                 if (progress >= 100) {
                     progress = 100;
@@ -190,71 +280,12 @@
                     calculateBtn.disabled = false;
                     calculateBtn.textContent = "Calculate Age";
                     showResults(userName, birthDate, years, months, days);
-
-                    // Fire confetti after calculation finishes
-                    confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                    });
                 }
                 loadingBar.style.width = `${progress}%`;
-                }, 300);
-            }
-
-            // Clear previous results
-            resultDiv.textContent = "";
-            milestonesList.innerHTML = "";
-            messageDiv.classList.add("hidden");
-
-        function showResults(userName, birthDate, years, months, days) {
-            // Display age
-            resultDiv.textContent = `Hello ${userName}! You are ${years} years, ${months} months, and ${days} days old.`;
-
-            function randomBetween(min, max) {
-               return Math.floor(Math.random() * (max - min + 1)) + min;
-               }
-
-            // Calculate milestones from birthDate
-            const milestones = [
-                { label: "1st Birthday", yearsToAdd: 1 },
-                { label: "18th Birthday", yearsToAdd: 18 },
-                { label: "21st Birthday", yearsToAdd: 21 },
-                { label: "50th Birthday", yearsToAdd: 50 },
-                { label: "100th Birthday", yearsToAdd: 100 },
-                { label: "Marriage Date (est.)", yearsToAdd: randomBetween(25, 35) },
-                { label: "Estimated Date of Death", yearsToAdd: randomBetween(75, 95) },
-            ];
-
-            milestonesList.innerHTML = "";
-
-            milestones.forEach((ms) => {
-                const milestoneDate = new Date(
-                    birthDate.getFullYear() + ms.yearsToAdd,
-                    birthDate.getMonth(),
-                    birthDate.getDate()
-                );
-                const dateStr = milestoneDate.toLocaleDateString("en-GB");
-
-                let msg = "";
-                if (ms.label === "Marriage Date (est.)") {
-                    const marriageMsg = marriageMessages[Math.floor(Math.random() * marriageMessages.length)];
-                    msg = `${ms.label}: ${dateStr} — ${marriageMsg}`;
-                } else if (ms.label === "Estimated Date of Death") {
-                    const deathMsg = deathMessages[Math.floor(Math.random() * deathMessages.length)];
-                    msg = `${ms.label}: ${dateStr} — ${deathMsg}`;
-                } else {
-                    msg = `${ms.label}: ${dateStr}`;
-                }
-
-                const li = document.createElement("li");
-                li.textContent = msg;
-                li.className = "text-gray-700";
-                milestonesList.appendChild(li);
-            });
+            }, 300);
         }
 
-       // Button click stages + loading bar
+        // Button click shake & staged confirmation
         let clickStage = 0;
         const buttonTexts = ["Are you sure?", "Really sure?", "Okay, fine."];
 
@@ -263,32 +294,13 @@
             setTimeout(() => calculateBtn.classList.remove('shake'), 300);
 
             if (clickStage < buttonTexts.length) {
-                setTimeout(() => {
-                    calculateBtn.textContent = buttonTexts[clickStage];
-                    clickStage++;
-                }, 200);
-                return;
-            }
-
-            if (clickStage === buttonTexts.length) {
-                loadingBar.style.width = '0%';
-                loadingBarContainer.classList.remove('hidden');
-
-                let progress = 0;
-                const loadingInterval = setInterval(() => {
-                    progress += 1;
-                    loadingBar.style.width = `${progress}%`;
-                    if (progress >= 100) {
-                        clearInterval(loadingInterval);
-                        loadingBarContainer.classList.add('hidden');
-                        calculateAgeAndMilestones();
-                        calculateBtn.textContent = "Calculate Age";
-                        clickStage = 0;
-                    }
-                }, 30); // ~3 seconds
+                calculateBtn.textContent = buttonTexts[clickStage];
+                clickStage++;
+            } else {
+                calculateAgeAndMilestones();
+                clickStage = 0;
             }
         });
-        
     </script>
 </body>
 </html>
