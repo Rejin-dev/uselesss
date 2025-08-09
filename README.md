@@ -46,7 +46,7 @@ For Software:
 ![Alt text](Screenshot11.png)
 *User inputs name and date of birth.*
 
-![Alt text](Screenshot2.png)
+![Alt text](Screenshot22.png)
 *Sarcastic life milestones and age calculation results displayed.*
 
 ![Alt text](Screenshot3.png)
