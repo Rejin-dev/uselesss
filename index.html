@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>    
     <script>
         const nameInput = document.getElementById("name");
         const dobInput = document.getElementById("dob");
@@ -174,19 +174,14 @@
                 years--;
                 months += 12;
             }
+                  // Show loading bar with animation
+                loadingBarContainer.classList.remove("hidden");
+                loadingBar.style.width = "0%";
+                calculateBtn.disabled = true;
+                calculateBtn.textContent = "Calculating...";
+                let progress = 0;
 
-            // Clear previous results
-            resultDiv.textContent = "";
-            milestonesList.innerHTML = "";
-            messageDiv.classList.add("hidden");
-
-            // Simulate loading bar
-            loadingBarContainer.classList.remove("hidden");
-            loadingBar.style.width = "0%";
-            calculateBtn.disabled = true;
-            calculateBtn.textContent = "Calculating...";
-            let progress = 0;
-            const loadingInterval = setInterval(() => {
+                const loadingInterval = setInterval(() => {
                 progress += Math.random() * 15;
                 if (progress >= 100) {
                     progress = 100;
@@ -195,11 +190,23 @@
                     calculateBtn.disabled = false;
                     calculateBtn.textContent = "Calculate Age";
                     showResults(userName, birthDate, years, months, days);
+
+                    // Fire confetti after calculation finishes
+                    confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                    });
                 }
                 loadingBar.style.width = `${progress}%`;
-            }, 300);
-        }
+                }, 300);
+            }
 
+            // Clear previous results
+            resultDiv.textContent = "";
+            milestonesList.innerHTML = "";
+            messageDiv.classList.add("hidden");
+            
         function showResults(userName, birthDate, years, months, days) {
             // Display age
             resultDiv.textContent = `Hello ${userName}! You are ${years} years, ${months} months, and ${days} days old.`;
