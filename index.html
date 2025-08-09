@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Creative Age Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -19,30 +19,42 @@
     </style>
 </head>
 <body class="bg-gradient-to-r from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-5">
-
     <div class="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full">
-        <h1 class="text-3xl font-extrabold text-center mb-6 text-purple-600">🎂 Creative Age Calculator</h1>
+        <h1 class="text-3xl font-extrabold text-center mb-6 text-purple-600">Life Calculator</h1>
 
         <!-- Name Input -->
         <div class="mb-4">
             <label for="name" class="block text-gray-700 font-medium mb-1">Enter your Name:</label>
-            <input type="text" id="name" placeholder="Your full name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <input
+                type="text"
+                id="name"
+                placeholder="Your full name"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
         </div>
 
         <!-- DOB Input -->
         <div class="mb-4">
             <label for="dob" class="block text-gray-700 font-medium mb-1">Enter your Date of Birth:</label>
-            <input type="text" id="dob" placeholder="dd-mm-yyyy" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <input
+                type="text"
+                id="dob"
+                placeholder="dd-mm-yyyy"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
         </div>
 
         <!-- Button -->
-        <button id="calculateBtn" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg transition duration-200">
+        <button
+            id="calculateBtn"
+            class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+        >
             Calculate Age
         </button>
 
         <!-- Loading Bar -->
         <div id="loadingBarContainer" class="hidden w-full bg-gray-300 rounded-lg mt-4">
-            <div id="loadingBar" class="h-3 bg-purple-500 rounded-lg" style="width: 0%;"></div>
+            <div id="loadingBar" class="h-3 bg-purple-500 rounded-lg" style="width: 0%"></div>
         </div>
 
         <!-- Messages -->
@@ -55,43 +67,100 @@
         </div>
     </div>
 
+    
     <script>
-        const nameInput = document.getElementById('name');
-        const dobInput = document.getElementById('dob');
-        const messageDiv = document.getElementById('message');
-        const resultDiv = document.getElementById('result');
-        const milestonesList = document.getElementById('milestones');
-        const calculateBtn = document.getElementById('calculateBtn');
-        const loadingBarContainer = document.getElementById('loadingBarContainer');
-        const loadingBar = document.getElementById('loadingBar');
+        const nameInput = document.getElementById("name");
+        const dobInput = document.getElementById("dob");
+        const messageDiv = document.getElementById("message");
+        const resultDiv = document.getElementById("result");
+        const milestonesList = document.getElementById("milestones");
+        const calculateBtn = document.getElementById("calculateBtn");
+        const loadingBarContainer = document.getElementById("loadingBarContainer");
+        const loadingBar = document.getElementById("loadingBar");
+
+        const marriageMessages = [
+            "നിനക്ക് വിവാഹം ഇല്ല… family WhatsApp group-ലും hope ഇല്ല!",
+            "വിവാഹം? അതോ ഒരു നിക്കു നിമിഷം നീണ്ട കിടപ്പ് മതി!",
+            "വിവാഹം ആണോ? എന്ത് പറഞ്ഞാലും ആഹ്, അല്ലല്ലോ!",
+            "വിവാഹം ഫലപ്രദമല്ല, ഫ്രീ WiFi മാത്രമേ കിട്ടൂ!",
+            "നിന്റെ വിവാഹം ഫയൽ ലാസ്റ്റ് സേവ് ചെയ്യപ്പെടുന്നില്ല!",
+            "നിനക്ക് വിവാഹം? ആദ്യം നിനക്ക് ഫ്രീ WiFi കിട്ടണേ!",
+            "വിവാഹം? ഞാന്‍ ഉറ്റു നോക്കുമ്പോള്‍ ബൈക്ക് വാങ്ങാനായേക്കും!",
+            "വിവാഹം വരും, പക്ഷെ സീറ്റ് റിസർവേഷൻ പോലെയാണ്!",
+            "നിനക്ക് വിവാഹം? ആദ്യം പണവും ഷൂട്ടും സജ്ജമാക്കൂ!",
+            "വിവാഹം പറയുമ്പോൾ, ആ WhatsApp സ്റ്റാറ്റസ് മാറ്റാനാകില്ല!",
+            "വിവാഹം? ആദ്യം Netflix സബ്സ്ക്രിപ്ഷൻ പെയ് ചെയ്യൂ!",
+            "നിന്റെ വിവാഹം? ഒരു ഓൺലൈൻ ഹോളിഡേ പോലെയാണ്!",
+            "വിവാഹം വരും, പക്ഷേ ഒന്ന് പേപ്പർ വർക്കും കൂടി വേണം!",
+            "വിവാഹം? ഫലപ്രദത കുറവായ ഒരു അഡ്മിനിസ്‌ട്രേറ്റീവ് ടാസ്ക്!",
+            "നിനക്ക് വിവാഹം? ആദ്യം നിനക്ക് ഒരു ഹോംവർക്കും വേണം!",
+            "വിവാഹം? അതൊരു ഡെലിവറി ഓർഡർ പോലെ വരും!",
+            "നിന്റെ വിവാഹം? എല്ലാം പ്ലാനിൽ ആണെങ്കിൽ മാത്രമേ സാധിക്കൂ!",
+            "വിവാഹം വരും, പക്ഷേ സ്ലോ മോഷൻ പോലെ!",
+            "വിവാഹം? ആദ്യം നിന്റെ ഫോൺ ചാർജ് ചെയ്യൂ!",
+            "നിന്റെ വിവാഹം? അതൊരു വീഡിയോ ഗെയിം ലെവലാണ്!"
+        ];
+
+        const deathMessages = [
+            "മരണമെന്നത് ഉറപ്പാണ്, പക്ഷേ ഇപ്പോൾക്കല്ല... അതുവരെ Netflix-ൽ എന്താണാ കാണാൻ പോകുന്നത്?",
+            "ഇനി കിടക്കാതെ ജീവിതം ആസ്വദിക്കൂ, ആനകളെ കാണാൻ അധിക സമയം ഉണ്ടല്ലോ!",
+            "വയസായാൽ ഉറപ്പും പോവാം, പക്ഷേ ഇനിയും ചായ കുടിക്കാം!",
+            "സമയമെത്തും, പക്ഷേ ആദ്യം ചെറുപുഴയിൽ കപ്പ നാടകം കാണാം!",
+            "മരിച്ചു പോകരുത്, വീട്ടിലെ WhatsApp ഗ്രൂപ്പിൽ നിന്ന് ഞെട്ടിപ്പോകും!",
+            "ഇന്നലെ മാത്രം സുഖം കൊണ്ടിരുന്നോ? ഇനി കഴിഞ്ഞുള്ളത് വരും!",
+            "മരണവിവരം ലഭിച്ചു, പക്ഷേ മുന്നേന്ന് കുടി കുടിക്കണം!",
+            "സമയത്തോളം കിടക്കാതെ പാട്ട് പാടൂ, മരണം കാത്തിരിക്കുന്നു!",
+            "ഇനി വേദനയില്ല, പക്ഷേ ഇപ്പോൾ വിഷമം അനുഭവിക്കൂ!",
+            "മരണം വരും, പക്ഷേ നാളെ നീണ്ട സ്നേഹ പാട് കേൾക്കാം!",
+            "അവസാന വാക്കുകൾ പറയാൻ മുൻപേ, ചായക്ക് ഒരു ചുമട്ട്!",
+            "ഇനി കിടക്കാൻ ആഗ്രഹിക്കുന്നില്ലെങ്കിൽ, മരണം വന്നു എന്ന് കരുതൂ!",
+            "ഇനി കളി കളിക്കാൻ സമയം കുറവാണ്, പക്ഷേ പരിശ്രമം വേണം!",
+            "മരണം ഒരു സ്റ്റോപ്പ് സിഗ്നലാണ്, പക്ഷേ കിടക്കാൻ കാത്തിരിക്കണം!",
+            "ഇനി നിന്നെ കാണാൻ കോഴിക്കോട്ട് വരാം, മരണത്തിന് ശേഷം മാത്രം!",
+            "മരണത്തിന് മുമ്പ് ഒരു തവണ 'ചായ' വാങ്ങൂ!",
+            "ഇനി പഴയകഥകൾ പറഞ്ഞു, മരണം കേൾക്കാൻ തയ്യാറാകൂ!",
+            "മരണമെന്നത് ഒരു കെട്ടുപണി, പക്ഷേ നീ ഒറ്റയ്ക്കല്ല!",
+            "ഇനി ചിരിക്കാൻ കുറച്ച് കൂടി സമയം ഉണ്ടെങ്കിലും, മരണം വരും!",
+            "അവസാനം വന്ന് കൂടുമ്പോൾ, അത് ഒരു നല്ല പാട്ടാകാം!"
+        ];
 
         function showMessage(msg, type) {
             messageDiv.textContent = msg;
-            messageDiv.className = `mt-4 p-3 rounded-lg text-white ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
-            messageDiv.classList.remove('hidden');
+            messageDiv.className = `mt-4 p-3 rounded-lg text-white ${type === "error" ? "bg-red-500" : "bg-green-500"}`;
+            messageDiv.classList.remove("hidden");
         }
 
         function calculateAgeAndMilestones() {
             const userName = nameInput.value.trim();
             if (!userName) {
-                showMessage('Please enter your name.', 'error');
+                showMessage("Please enter your name.", "error");
                 return;
             }
 
             const dob = dobInput.value.trim();
             if (!/^\d{2}-\d{2}-\d{4}$/.test(dob)) {
-                showMessage('Please enter date in dd-mm-yyyy format.', 'error');
+                showMessage("Please enter date in dd-mm-yyyy format.", "error");
                 return;
             }
 
-            const [day, month, year] = dob.split('-').map(Number);
+            const [day, month, year] = dob.split("-").map(Number);
             const birthDate = new Date(year, month - 1, day);
-            if (birthDate.getDate() !== day || birthDate.getMonth() !== month - 1 || birthDate.getFullYear() !== year) {
-                showMessage('Invalid date entered.', 'error');
+            if (
+                birthDate.getDate() !== day ||
+                birthDate.getMonth() !== month - 1 ||
+                birthDate.getFullYear() !== year
+            ) {
+                showMessage("Invalid date entered.", "error");
                 return;
             }
 
             const today = new Date();
+
+            if (birthDate > today) {
+                showMessage("Date of birth cannot be in the future.", "error");
+                return;
+            }
+
             let years = today.getFullYear() - year;
             let months = today.getMonth() - (month - 1);
             let days = today.getDate() - day;
@@ -106,66 +175,76 @@
                 months += 12;
             }
 
-            const hours = today.getHours();
-            const minutes = today.getMinutes();
-            const seconds = today.getSeconds();
+            // Clear previous results
+            resultDiv.textContent = "";
+            milestonesList.innerHTML = "";
+            messageDiv.classList.add("hidden");
 
-            resultDiv.textContent = `${userName}, you are ${years} years, ${months} months, ${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds old.`;
-
-            const milestones = [];
-
-            // 1 million minutes old
-            const oneMillionMinutes = new Date(birthDate.getTime() + 1000000 * 60 * 1000);
-            milestones.push({ label: '1 million minutes old', date: oneMillionMinutes });
-
-            // Next birthday
-            const nextBirthday = new Date(today.getFullYear(), month - 1, day);
-            if (nextBirthday < today) {
-                nextBirthday.setFullYear(today.getFullYear() + 1);
-            }
-            milestones.push({ label: 'Next birthday', date: nextBirthday });
-
-            // 10,000th day alive
-            const tenThousandDays = new Date(birthDate.getTime() + 10000 * 24 * 60 * 60 * 1000);
-            milestones.push({ label: '10,000th day alive', date: tenThousandDays });
-
-            // Fun random marriage prediction
-            const randomMarriageAge = Math.floor(Math.random() * (35 - 22 + 1)) + 22;
-            const marriageDate = new Date(birthDate.getFullYear() + randomMarriageAge, birthDate.getMonth(), birthDate.getDate());
-
-            let marriageLabel;
-            let marriageDateValue = marriageDate;
-            if (Math.random() < 0.5) {
-                marriageLabel = `<span style="color:red; font-weight:bold;">Predicted marriage date - നിനക്ക് ഒരു പെണ്ണിനെ കിട്ടില്ല.</span>`;
-                marriageDateValue = null;
-            } else {
-                marriageLabel = 'Predicted marriage date';
-            }
-
-            milestones.push({ label: marriageLabel, date: marriageDateValue });
-
-            milestones.sort((a, b) => {
-                if (!a.date) return 1;
-                if (!b.date) return -1;
-                return a.date - b.date;
-            });
-
-            milestonesList.innerHTML = '';
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            milestones.forEach(m => {
-                const li = document.createElement('li');
-                if (m.date) {
-                    li.innerHTML = `${m.label}: ${m.date.toLocaleDateString(undefined, options)}`;
-                } else {
-                    li.innerHTML = `${m.label}`;
+            // Simulate loading bar
+            loadingBarContainer.classList.remove("hidden");
+            loadingBar.style.width = "0%";
+            calculateBtn.disabled = true;
+            calculateBtn.textContent = "Calculating...";
+            let progress = 0;
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(loadingInterval);
+                    loadingBarContainer.classList.add("hidden");
+                    calculateBtn.disabled = false;
+                    calculateBtn.textContent = "Calculate Age";
+                    showResults(userName, birthDate, years, months, days);
                 }
-                milestonesList.appendChild(li);
-            });
-
-            showMessage('Age calculated successfully!', 'success');
+                loadingBar.style.width = `${progress}%`;
+            }, 300);
         }
 
-        // Button click stages + loading bar
+        function showResults(userName, birthDate, years, months, days) {
+            // Display age
+            resultDiv.textContent = `Hello ${userName}! You are ${years} years, ${months} months, and ${days} days old.`;
+
+            // Calculate milestones from birthDate
+            const milestones = [
+                { label: "1st Birthday", yearsToAdd: 1 },
+                { label: "10th Birthday", yearsToAdd: 10 },
+                { label: "18th Birthday", yearsToAdd: 18 },
+                { label: "21st Birthday", yearsToAdd: 21 },
+                { label: "30th Birthday", yearsToAdd: 30 },
+                { label: "50th Birthday", yearsToAdd: 50 },
+                { label: "Marriage Date (est.)", yearsToAdd: 27 },
+                { label: "Estimated Date of Death", yearsToAdd: 72 },
+            ];
+
+            milestonesList.innerHTML = "";
+
+            milestones.forEach((ms) => {
+                const milestoneDate = new Date(
+                    birthDate.getFullYear() + ms.yearsToAdd,
+                    birthDate.getMonth(),
+                    birthDate.getDate()
+                );
+                const dateStr = milestoneDate.toLocaleDateString("en-GB");
+
+                let msg = "";
+                if (ms.label === "Marriage Date (est.)") {
+                    const marriageMsg = marriageMessages[Math.floor(Math.random() * marriageMessages.length)];
+                    msg = `${ms.label}: ${dateStr} — ${marriageMsg}`;
+                } else if (ms.label === "Estimated Date of Death") {
+                    const deathMsg = deathMessages[Math.floor(Math.random() * deathMessages.length)];
+                    msg = `${ms.label}: ${dateStr} — ${deathMsg}`;
+                } else {
+                    msg = `${ms.label}: ${dateStr}`;
+                }
+
+                const li = document.createElement("li");
+                li.textContent = msg;
+                li.className = "text-gray-700";
+                milestonesList.appendChild(li);
+            });
+        }
+
+       // Button click stages + loading bar
         let clickStage = 0;
         const buttonTexts = ["Are you sure?", "Really sure?", "Okay, fine."];
 
@@ -199,7 +278,7 @@
                 }, 30); // ~3 seconds
             }
         });
+        
     </script>
 </body>
 </html>
-
