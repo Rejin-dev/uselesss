@@ -43,7 +43,7 @@ Check out the live project here: [ഭാവി തന്ത്രജ്ഞൻ](h
 For Software:
 
 # Screenshots
-![Alt text](Screenshot1.png)
+![Alt text](Screenshot11.png)
 *User inputs name and date of birth.*
 
 ![Alt text](Screenshot2.png)
