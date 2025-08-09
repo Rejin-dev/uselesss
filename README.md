@@ -37,7 +37,7 @@ For Software:
  No installation required. Just download or clone the repo.
 
 # Run
-Open the index.html file in any modern browser to launch the app.
+Check out the live project here: [Fate Calculator Live](https://fatecalculator-pi.vercel.app/)
 
 ### Project Documentation
 For Software:
