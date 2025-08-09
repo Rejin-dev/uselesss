@@ -206,21 +206,24 @@
             resultDiv.textContent = "";
             milestonesList.innerHTML = "";
             messageDiv.classList.add("hidden");
-            
+
         function showResults(userName, birthDate, years, months, days) {
             // Display age
             resultDiv.textContent = `Hello ${userName}! You are ${years} years, ${months} months, and ${days} days old.`;
 
+            function randomBetween(min, max) {
+               return Math.floor(Math.random() * (max - min + 1)) + min;
+               }
+
             // Calculate milestones from birthDate
             const milestones = [
                 { label: "1st Birthday", yearsToAdd: 1 },
-                { label: "10th Birthday", yearsToAdd: 10 },
                 { label: "18th Birthday", yearsToAdd: 18 },
                 { label: "21st Birthday", yearsToAdd: 21 },
-                { label: "30th Birthday", yearsToAdd: 30 },
                 { label: "50th Birthday", yearsToAdd: 50 },
-                { label: "Marriage Date (est.)", yearsToAdd: 27 },
-                { label: "Estimated Date of Death", yearsToAdd: 72 },
+                { label: "100th Birthday", yearsToAdd: 100 },
+                { label: "Marriage Date (est.)", yearsToAdd: randomBetween(25, 35) },
+                { label: "Estimated Date of Death", yearsToAdd: randomBetween(75, 95) },
             ];
 
             milestonesList.innerHTML = "";
